@@ -16,11 +16,11 @@ try {
     PORT: Joi.number().default(3000).port(),
     DATABASE_URL: Joi.string()
       .uri()
-      .required()
+      .default("postgres://postgres:postgres@localhost:5432/pagos_db")
       .description("PostgreSQL database connection string"),
     PYTHON_SERVICE_URL: Joi.string()
       .uri()
-      .required()
+      .default("http://localhost:8000")
       .description("URL of the Python payment processing service"),
     DOCKER_ENV: Joi.string()
       .valid("true", "false")
