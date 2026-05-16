@@ -1,4 +1,4 @@
-# 💳 Sistema de Pagos — Prueba Técnica Backend
+# 💳 Sistema de Pagos 
 
 Sistema de pagos con API RESTful que integra **Node.js (NestJS)**, **Python (FastAPI)** y **PostgreSQL**.
 
