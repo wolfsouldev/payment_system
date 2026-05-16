@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      # - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
       - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
     healthcheck:
@@ -43,8 +43,11 @@ services:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/pagos_db
       PYTHON_SERVICE_URL: http://service-python:8000
       PORT: "3000"
+      DOCKER_ENV: "true"
     ports:
       - "3000:3000"
+    volumes:
+      - ./database:/app/database
     depends_on:
       postgres:
         condition: service_healthy

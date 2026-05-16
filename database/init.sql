@@ -72,14 +72,17 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers
+DROP TRIGGER IF EXISTS trg_usuarios_updated_at ON usuarios;
 CREATE TRIGGER trg_usuarios_updated_at
     BEFORE UPDATE ON usuarios
     FOR EACH ROW EXECUTE FUNCTION actualizar_updated_at();
 
+DROP TRIGGER IF EXISTS trg_tarjetas_updated_at ON tarjetas;
 CREATE TRIGGER trg_tarjetas_updated_at
     BEFORE UPDATE ON tarjetas
     FOR EACH ROW EXECUTE FUNCTION actualizar_updated_at();
 
+DROP TRIGGER IF EXISTS trg_pagos_updated_at ON pagos;
 CREATE TRIGGER trg_pagos_updated_at
     BEFORE UPDATE ON pagos
     FOR EACH ROW EXECUTE FUNCTION actualizar_updated_at();
