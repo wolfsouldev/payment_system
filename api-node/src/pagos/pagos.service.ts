@@ -44,70 +44,9 @@ export class PagosService {
       );
     }
 
-    let resultado: { aprobado: boolean; estado: string; referencia: string };
+    const resultado = await this.callPaymentService(dto);
 
-    // AbortController permite cancelar el fetch si supera el timeout
-    const controller = new AbortController();
-    const timeout = setTimeout(
-      () => controller.abort(),
-      PAYMENT_SERVICE_TIMEOUT_MS,
-    );
-
-    try {
-      const response = await fetch(`${this.pythonServiceUrl}/procesar-pago`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          monto: dto.monto,
-          moneda: dto.moneda || "MXN",
-          descripcion: dto.descripcion,
-        }),
-        signal: controller.signal, // vincula el abort al fetch
-      });
-
-      if (!response.ok) {
-        this.logger.error(
-          `El servicio de pagos respondió con error HTTP ${response.status}`,
-        );
-        throw new BadGatewayException(
-          "El servicio de pagos respondió con un error inesperado",
-        );
-      }
-
-      resultado = await response.json();
-    } catch (error) {
-      // AbortError significa que el fetch fue cancelado por timeout
-      if (error?.name === "AbortError") {
-        this.logger.error(
-          `El servicio de pagos no respondió en ${PAYMENT_SERVICE_TIMEOUT_MS}ms`,
-        );
-        throw new ServiceUnavailableException(
-          "El servicio de pagos no está disponible en este momento. Intenta más tarde.",
-        );
-      }
-
-      // Si el error ya es una excepción HTTP controlada
-      if (
-        error instanceof BadGatewayException ||
-        error instanceof ServiceUnavailableException
-      ) {
-        throw error;
-      }
-
-      // Error de red u otro error inesperado
-      this.logger.error(
-        "Error inesperado al conectar con el servicio de pagos",
-        error instanceof Error ? error.stack : error,
-      );
-      throw new BadGatewayException(
-        "No se pudo conectar con el servicio de procesamiento de pagos",
-      );
-    } finally {
-      // Siempre limpiar el timeout para no dejar timers huérfanos
-      clearTimeout(timeout);
-    }
-
-    // En este punto el servicio respondió OK, se puede registrar el pago
+    // El servicio respondió OK, se puede registrar el pago
     try {
       const [pago] = await this.db
         .insert(schema.pagos)
@@ -131,14 +70,12 @@ export class PagosService {
         },
       };
     } catch (error) {
-      // CRÍTICO: el pago fue procesado por el servicio externo pero no se pudo registrar en DB.
-      // La referencia externa permite reconciliación manual.
       this.logger.error(
-        `PAGO PROCESADO SIN REGISTRAR — referencia externa: ${resultado.referencia}`,
+        `El pago no pudo completarse porque el servicio de procesamiento no respondió correctamente.`,
         error instanceof Error ? error.stack : error,
       );
       throw new InternalServerErrorException(
-        "El pago fue procesado pero no pudo registrarse. Contacta a soporte con tu referencia.",
+        "No se pudo procesar el pago debido a un error en el servicio. Intenta nuevamente más tarde.",
       );
     }
   }
@@ -242,5 +179,69 @@ export class PagosService {
     }
 
     return pago;
+  }
+
+  // Helpers
+  private async callPaymentService(dto: CreatePagoDto) {
+    // Abort controller para timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(
+      () => controller.abort(),
+      PAYMENT_SERVICE_TIMEOUT_MS,
+    );
+
+    try {
+      const response = await fetch(`${this.pythonServiceUrl}/procesar-pago`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          monto: dto.monto,
+          moneda: dto.moneda || "MXN",
+          descripcion: dto.descripcion,
+        }),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        this.logger.error(
+          `El servicio de pagos respondió con error HTTP ${response.status}`,
+        );
+        throw new BadGatewayException(
+          "El servicio de pagos respondió con un error inesperado",
+        );
+      }
+
+      return await response.json();
+    } catch (error) {
+      // Timeout - servicio no respondió a tiempo
+      if (error?.name === "AbortError") {
+        this.logger.error(
+          `El servicio de pagos no respondió en ${PAYMENT_SERVICE_TIMEOUT_MS}ms`,
+        );
+        throw new ServiceUnavailableException(
+          "El servicio de pagos no está disponible en este momento. Intenta más tarde.",
+        );
+      }
+
+      // Ya manejados por el servicio de pagos
+      if (
+        error instanceof BadGatewayException ||
+        error instanceof ServiceUnavailableException
+      ) {
+        throw error;
+      }
+
+      // Error inesperado
+      this.logger.error(
+        "Error inesperado al conectar con el servicio de pagos",
+        error instanceof Error ? error.stack : error,
+      );
+      throw new BadGatewayException(
+        "No se pudo conectar con el servicio de procesamiento de pagos",
+      );
+    } finally {
+      // Limpiar timeout
+      clearTimeout(timeout);
+    }
   }
 }
