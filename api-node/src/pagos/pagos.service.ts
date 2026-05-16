@@ -35,7 +35,6 @@ export class PagosService {
     await this.usuariosService.findOne(dto.usuarioId);
     const tarjeta = await this.tarjetasService.findOne(dto.tarjetaId);
 
-    // La tarjeta existe pero no pertenece a este usuario → 403, no 404
     if (tarjeta.usuarioId !== dto.usuarioId) {
       throw new ForbiddenException(
         "La tarjeta no pertenece al usuario especificado",
