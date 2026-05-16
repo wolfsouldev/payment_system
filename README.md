@@ -81,7 +81,7 @@ Sistema de pagos con API RESTful que integra **Node.js (NestJS)**, **Python (Fas
 ```bash
 # Clonar el repositorio
 git clone <url-del-repositorio>
-cd dc
+cd payment_system
 
 # Levantar todos los servicios
 docker compose up --build
@@ -278,7 +278,6 @@ Se incluyen 5 usuarios, 6 tarjetas y 7 pagos de ejemplo para pruebas inmediatas.
 
 ## 📝 Notas
 
-- Los datos de tarjetas son **ficticios** y no representan tarjetas reales.
 - El servicio Python simula el procesamiento con un resultado **aleatorio** (80% aprobado, 20% rechazado).
 - Los UUIDs se generan automáticamente por PostgreSQL.
 - Los triggers actualizan `updated_at` automáticamente en cada UPDATE.
