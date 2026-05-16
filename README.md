@@ -14,7 +14,7 @@ Sistema de pagos con API RESTful que integra **Node.js (NestJS)**, **Python (Fas
 ```
 ┌─────────────────┐       ┌──────────────────────┐       ┌─────────────────┐
 │   Cliente /      │       │   API Node.js        │       │  Servicio Python │
-│   Postman        │──────▶│   (NestJS + Drizzle) │──────▶│  (FastAPI)       │
+│   Postman        │──────▶│   (NestJS) │──────▶│  (FastAPI)       │
 │                  │       │   :3000               │       │  :8000           │
 └─────────────────┘       └──────────┬───────────┘       └─────────────────┘
                                      │                     Simula procesamiento
@@ -35,7 +35,7 @@ Sistema de pagos con API RESTful que integra **Node.js (NestJS)**, **Python (Fas
 
 ```
 .
-├── api-node/                  # API REST (NestJS + Drizzle ORM)
+├── api-node/                  # API REST (NestJS)
 │   ├── src/
 │   │   ├── database/          # Configuración Drizzle + schema
 │   │   ├── usuarios/          # Módulo de usuarios (CRUD)
@@ -273,15 +273,15 @@ Se incluyen 5 usuarios, 6 tarjetas y 7 pagos de ejemplo para pruebas inmediatas.
 
 ## ⚙️ Stack Tecnológico
 
-| Componente                 | Tecnología                                    |
-| -------------------------- | --------------------------------------------- |
-| **API Principal**          | Node.js + NestJS                              |
-| **ORM**                    | Drizzle ORM                                   |
-| **Procesamiento de Pagos** | Python + FastAPI                              |
-| **Base de Datos**          | PostgreSQL 16                                 |
-| **Contenedores**           | Docker + Docker Compose                       |
-| **Documentación**          | Swagger / OpenAPI                             |
-| **Validación**             | class-validator (NestJS) + Pydantic (FastAPI) |
+| Componente                 | Tecnología                                                                    |
+| -------------------------- | ----------------------------------------------------------------------------- |
+| **API Principal**          | Node.js + NestJS                                                              |
+| **ORM**                    | Drizzle ORM (Type-safe, seguridad contra SQL injection, consultas eficientes) |
+| **Procesamiento de Pagos** | Python + FastAPI                                                              |
+| **Base de Datos**          | PostgreSQL 16                                                                 |
+| **Contenedores**           | Docker + Docker Compose                                                       |
+| **Documentación**          | Swagger / OpenAPI                                                             |
+| **Validación**             | class-validator (NestJS) + Pydantic (FastAPI)                                 |
 
 ---
 
