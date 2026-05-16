@@ -33,6 +33,7 @@ export const tarjetas = pgTable(
     tipo: varchar("tipo", { length: 20 }).notNull().default("credito"),
     marca: varchar("marca", { length: 20 }).notNull().default("visa"),
     activa: boolean("activa").notNull().default(true),
+    csv: varchar("csv", { length: 10 }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
   },

@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS tarjetas (
     tipo            VARCHAR(20)   NOT NULL DEFAULT 'credito' CHECK (tipo IN ('credito', 'debito')),
     marca           VARCHAR(20)   NOT NULL DEFAULT 'visa'    CHECK (marca IN ('visa', 'mastercard', 'amex')),
     activa          BOOLEAN       NOT NULL DEFAULT TRUE,
+    csv             VARCHAR(1000),
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
