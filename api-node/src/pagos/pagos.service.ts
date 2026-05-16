@@ -17,6 +17,7 @@ import { UsuariosService } from "../usuarios/usuarios.service";
 import { TarjetasService } from "../tarjetas/tarjetas.service";
 import { CreatePagoDto } from "./dto/create-pago.dto";
 import { FindPagosDto } from "./dto/find-pagos.dto";
+import { envConfig } from "../config/env.config";
 
 // Tiempo máximo de espera al servicio de pagos (ms)
 const PAYMENT_SERVICE_TIMEOUT_MS = 5000;
@@ -30,8 +31,7 @@ export class PagosService {
     private readonly usuariosService: UsuariosService,
     private readonly tarjetasService: TarjetasService,
   ) {
-    this.pythonServiceUrl =
-      process.env.PYTHON_SERVICE_URL || "http://localhost:8000";
+    this.pythonServiceUrl = envConfig.pythonServiceUrl;
   }
 
   async create(dto: CreatePagoDto) {

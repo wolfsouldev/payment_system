@@ -165,10 +165,19 @@ npm run start:prod
 #### Variables de Entorno (api-node/.env)
 
 ```env
+NODE_ENV=development
+PORT=3000
 DATABASE_URL=postgres://postgres:postgres@localhost:5432/pagos_db
 PYTHON_SERVICE_URL=http://localhost:8000
-PORT=3000
+DOCKER_ENV=false  # 'true' para Docker Compose, 'false' para desarrollo local
 ```
+
+**Variables principales:**
+
+- `DATABASE_URL`: URL de conexión a PostgreSQL
+- `PYTHON_SERVICE_URL`: URL del servicio de procesamiento de pagos (FastAPI)
+- `PORT`: Puerto donde corre la API NestJS (default: 3000)
+- `DOCKER_ENV`: Indica si la app corre en Docker (`true`) o local (`false`). Esto ajusta las rutas de archivos (ej. init.sql)
 
 ---
 

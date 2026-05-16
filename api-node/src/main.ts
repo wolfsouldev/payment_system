@@ -1,13 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { NestFactory } from "@nestjs/core";
+import { ValidationPipe } from "@nestjs/common";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 
-import { AppModule } from './app.module';
+import { AppModule } from "./app.module";
+import { envConfig } from "./config/env.config";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix("api/v1");
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -20,20 +21,20 @@ async function bootstrap() {
   app.enableCors();
 
   const config = new DocumentBuilder()
-    .setTitle('API Sistema de Pagos')
+    .setTitle("API Sistema de Pagos")
     .setDescription(
-      'API RESTful para el sistema de pagos. Permite gestionar usuarios, tarjetas de crédito y pagos.',
+      "API RESTful para el sistema de pagos. Permite gestionar usuarios, tarjetas de crédito y pagos.",
     )
-    .setVersion('1.0.0')
-    .addTag('Usuarios', 'Gestión de usuarios')
-    .addTag('Tarjetas', 'Gestión de tarjetas de crédito')
-    .addTag('Pagos', 'Gestión y procesamiento de pagos')
+    .setVersion("1.0.0")
+    .addTag("Usuarios", "Gestión de usuarios")
+    .addTag("Tarjetas", "Gestión de tarjetas de crédito")
+    .addTag("Pagos", "Gestión y procesamiento de pagos")
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup("docs", app, document);
 
-  const port = process.env.PORT || 3000;
+  const port = envConfig.port;
   await app.listen(port);
 
   console.log(`🚀 API corriendo en http://localhost:${port}`);
