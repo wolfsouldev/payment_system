@@ -1,4 +1,3 @@
-// Validación de configuración con Joi (si está disponible)
 let envConfig: {
   nodeEnv: string;
   port: number;
