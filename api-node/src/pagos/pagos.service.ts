@@ -6,6 +6,7 @@ import {
   BadGatewayException,
   InternalServerErrorException,
   Logger,
+  ServiceUnavailableException,
 } from "@nestjs/common";
 import { eq, desc, and, count } from "drizzle-orm";
 import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
@@ -17,6 +18,8 @@ import { TarjetasService } from "../tarjetas/tarjetas.service";
 import { CreatePagoDto } from "./dto/create-pago.dto";
 import { FindPagosDto } from "./dto/find-pagos.dto";
 
+// Tiempo máximo de espera al servicio de pagos (ms)
+const PAYMENT_SERVICE_TIMEOUT_MS = 5000;
 @Injectable()
 export class PagosService {
   private readonly logger = new Logger(PagosService.name);
@@ -43,6 +46,13 @@ export class PagosService {
 
     let resultado: { aprobado: boolean; estado: string; referencia: string };
 
+    // AbortController permite cancelar el fetch si supera el timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(
+      () => controller.abort(),
+      PAYMENT_SERVICE_TIMEOUT_MS,
+    );
+
     try {
       const response = await fetch(`${this.pythonServiceUrl}/procesar-pago`, {
         method: "POST",
@@ -52,25 +62,52 @@ export class PagosService {
           moneda: dto.moneda || "MXN",
           descripcion: dto.descripcion,
         }),
+        signal: controller.signal, // vincula el abort al fetch
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+        this.logger.error(
+          `El servicio de pagos respondió con error HTTP ${response.status}`,
+        );
+        throw new BadGatewayException(
+          "El servicio de pagos respondió con un error inesperado",
+        );
       }
 
       resultado = await response.json();
     } catch (error) {
+      // AbortError significa que el fetch fue cancelado por timeout
+      if (error?.name === "AbortError") {
+        this.logger.error(
+          `El servicio de pagos no respondió en ${PAYMENT_SERVICE_TIMEOUT_MS}ms`,
+        );
+        throw new ServiceUnavailableException(
+          "El servicio de pagos no está disponible en este momento. Intenta más tarde.",
+        );
+      }
+
+      // Si el error ya es una excepción HTTP controlada
+      if (
+        error instanceof BadGatewayException ||
+        error instanceof ServiceUnavailableException
+      ) {
+        throw error;
+      }
+
+      // Error de red u otro error inesperado
       this.logger.error(
-        "Error al conectar con el servicio de pagos",
+        "Error inesperado al conectar con el servicio de pagos",
         error instanceof Error ? error.stack : error,
       );
       throw new BadGatewayException(
         "No se pudo conectar con el servicio de procesamiento de pagos",
       );
+    } finally {
+      // Siempre limpiar el timeout para no dejar timers huérfanos
+      clearTimeout(timeout);
     }
 
-    // Si el servicio Python respondió OK pero el INSERT falla, el pago fue cobrado
-    // pero no registrado. Se loggea como error crítico para poder reconciliar manualmente.
+    // En este punto el servicio respondió OK, se puede registrar el pago
     try {
       const [pago] = await this.db
         .insert(schema.pagos)
