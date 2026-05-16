@@ -1,4 +1,4 @@
-# 💳 Sistema de Pagos 
+# 💳 Sistema de Pagos
 
 Sistema de pagos con API RESTful que integra **Node.js (NestJS)**, **Python (FastAPI)** y **PostgreSQL**.
 
@@ -92,13 +92,13 @@ docker compose up --build -d
 
 Eso es todo. Docker Compose levanta automáticamente:
 
-| Servicio | URL |
-|----------|-----|
-| **API NestJS** | http://localhost:3000 |
-| **Swagger API** | http://localhost:3000/docs |
-| **FastAPI** | http://localhost:8000 |
+| Servicio            | URL                        |
+| ------------------- | -------------------------- |
+| **API NestJS**      | http://localhost:3000      |
+| **Swagger API**     | http://localhost:3000/docs |
+| **FastAPI**         | http://localhost:8000      |
 | **Swagger FastAPI** | http://localhost:8000/docs |
-| **PostgreSQL** | localhost:5432 |
+| **PostgreSQL**      | localhost:5432             |
 
 La base de datos se inicializa automáticamente con `init.sql` y se carga con datos de ejemplo desde `seed.sql`.
 
@@ -176,10 +176,10 @@ PORT=3000
 
 Ambos servicios cuentan con documentación interactiva Swagger:
 
-| Servicio | Swagger UI | ReDoc |
-|----------|-----------|-------|
-| **API NestJS** | http://localhost:3000/docs | — |
-| **FastAPI** | http://localhost:8000/docs | http://localhost:8000/redoc |
+| Servicio       | Swagger UI                 | ReDoc                       |
+| -------------- | -------------------------- | --------------------------- |
+| **API NestJS** | http://localhost:3000/docs | —                           |
+| **FastAPI**    | http://localhost:8000/docs | http://localhost:8000/redoc |
 
 ---
 
@@ -189,38 +189,38 @@ Ambos servicios cuentan con documentación interactiva Swagger:
 
 #### Usuarios
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| `POST` | `/api/v1/usuarios` | Crear un usuario |
-| `GET` | `/api/v1/usuarios` | Listar todos los usuarios |
-| `GET` | `/api/v1/usuarios/:id` | Obtener usuario por ID |
-| `PUT` | `/api/v1/usuarios/:id` | Actualizar un usuario |
-| `DELETE` | `/api/v1/usuarios/:id` | Eliminar un usuario |
+| Método   | Endpoint               | Descripción               |
+| -------- | ---------------------- | ------------------------- |
+| `POST`   | `/api/v1/usuarios`     | Crear un usuario          |
+| `GET`    | `/api/v1/usuarios`     | Listar todos los usuarios |
+| `GET`    | `/api/v1/usuarios/:id` | Obtener usuario por ID    |
+| `PUT`    | `/api/v1/usuarios/:id` | Actualizar un usuario     |
+| `DELETE` | `/api/v1/usuarios/:id` | Eliminar un usuario       |
 
 #### Tarjetas
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| `POST` | `/api/v1/tarjetas` | Registrar una tarjeta |
-| `GET` | `/api/v1/tarjetas` | Listar todas las tarjetas |
-| `GET` | `/api/v1/tarjetas/usuario/:usuarioId` | Tarjetas de un usuario |
-| `GET` | `/api/v1/tarjetas/:id` | Obtener tarjeta por ID |
-| `DELETE` | `/api/v1/tarjetas/:id` | Eliminar una tarjeta |
+| Método   | Endpoint                              | Descripción               |
+| -------- | ------------------------------------- | ------------------------- |
+| `POST`   | `/api/v1/tarjetas`                    | Registrar una tarjeta     |
+| `GET`    | `/api/v1/tarjetas`                    | Listar todas las tarjetas |
+| `GET`    | `/api/v1/tarjetas/usuario/:usuarioId` | Tarjetas de un usuario    |
+| `GET`    | `/api/v1/tarjetas/:id`                | Obtener tarjeta por ID    |
+| `DELETE` | `/api/v1/tarjetas/:id`                | Eliminar una tarjeta      |
 
 #### Pagos
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| `POST` | `/api/v1/pagos` | Crear un pago (procesado por Python) |
-| `GET` | `/api/v1/pagos` | Listar todos los pagos |
-| `GET` | `/api/v1/pagos/usuario/:usuarioId` | Historial de pagos de un usuario |
-| `GET` | `/api/v1/pagos/:id` | Obtener pago por ID |
+| Método | Endpoint                           | Descripción                          |
+| ------ | ---------------------------------- | ------------------------------------ |
+| `POST` | `/api/v1/pagos`                    | Crear un pago (procesado por Python) |
+| `GET`  | `/api/v1/pagos`                    | Listar todos los pagos               |
+| `GET`  | `/api/v1/pagos/usuario/:usuarioId` | Historial de pagos de un usuario     |
+| `GET`  | `/api/v1/pagos/:id`                | Obtener pago por ID                  |
 
 ### Servicio Python (FastAPI)
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| `GET` | `/health` | Health check del servicio |
+| Método | Endpoint         | Descripción                                     |
+| ------ | ---------------- | ----------------------------------------------- |
+| `GET`  | `/health`        | Health check del servicio                       |
 | `POST` | `/procesar-pago` | Procesar un pago (80% aprobado / 20% rechazado) |
 
 ---
@@ -264,15 +264,15 @@ Se incluyen 5 usuarios, 6 tarjetas y 7 pagos de ejemplo para pruebas inmediatas.
 
 ## ⚙️ Stack Tecnológico
 
-| Componente | Tecnología |
-|------------|-----------|
-| **API Principal** | Node.js + NestJS |
-| **ORM** | Drizzle ORM |
-| **Procesamiento de Pagos** | Python + FastAPI |
-| **Base de Datos** | PostgreSQL 16 |
-| **Contenedores** | Docker + Docker Compose |
-| **Documentación** | Swagger / OpenAPI |
-| **Validación** | class-validator (NestJS) + Pydantic (FastAPI) |
+| Componente                 | Tecnología                                    |
+| -------------------------- | --------------------------------------------- |
+| **API Principal**          | Node.js + NestJS                              |
+| **ORM**                    | Drizzle ORM                                   |
+| **Procesamiento de Pagos** | Python + FastAPI                              |
+| **Base de Datos**          | PostgreSQL 16                                 |
+| **Contenedores**           | Docker + Docker Compose                       |
+| **Documentación**          | Swagger / OpenAPI                             |
+| **Validación**             | class-validator (NestJS) + Pydantic (FastAPI) |
 
 ---
 
@@ -282,3 +282,52 @@ Se incluyen 5 usuarios, 6 tarjetas y 7 pagos de ejemplo para pruebas inmediatas.
 - Los UUIDs se generan automáticamente por PostgreSQL.
 - Los triggers actualizan `updated_at` automáticamente en cada UPDATE.
 - Se incluyen índices para optimizar consultas frecuentes.
+
+---
+
+## 🧪 Testing Unitarios
+
+### API Node.js (NestJS)
+
+```bash
+cd api-node
+
+# Instalar dependencias de desarrollo (incluyendo Jest)
+npm install
+
+# Ejecutar todos los tests
+npm test
+
+# Ejecutar en modo watch (detecta cambios automáticamente)
+npm run test:watch
+
+# Ejecutar con reporte de cobertura
+npm run test:cov
+```
+
+**Tests disponibles:**
+
+- `usuarios.service.spec.ts` - Tests unitarios de `UsuariosService`
+- `pagos.service.spec.ts` - Tests unitarios de `PagosService`
+
+### Servicio Python (FastAPI)
+
+```bash
+cd service-python
+
+# Instalar dependencias (incluyendo pytest)
+pip install -r requirements.txt
+
+# Ejecutar todos los tests
+pytest
+
+# Ejecutar con reporte detallado
+pytest -v
+
+# Ejecutar con reporte de cobertura
+pytest --cov=app --cov-report=html
+```
+
+**Tests disponibles:**
+
+- `test_payment_processor.py` - Tests unitarios de `payment_processor.py`
